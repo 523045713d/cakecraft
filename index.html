@@ -31,6 +31,7 @@
             color: var(--text-main);
             line-height: 1.6;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
 
         /* Header */
@@ -38,6 +39,7 @@
             text-align: center;
             padding: 40px 20px 20px;
             background: linear-gradient(180deg, #FFF5EE 0%, var(--cream) 100%);
+            transition: all 0.3s ease;
         }
         .brand-name {
             font-family: 'Cookie', cursive;
@@ -64,12 +66,14 @@
             grid-template-columns: 1fr 1.2fr;
             gap: 40px;
             align-items: start;
+            transition: all 0.4s ease;
         }
 
         /* Preview Column (Left, Sticky) */
         .preview-column {
             position: sticky;
             top: 40px;
+            transition: all 0.4s ease;
         }
 
         .preview-card {
@@ -79,6 +83,7 @@
             padding: 24px;
             text-align: center;
             border: 1px solid var(--border-soft);
+            transition: all 0.4s ease;
         }
 
         .preview-stage {
@@ -92,6 +97,7 @@
             justify-content: center;
             overflow: hidden;
             margin-bottom: 20px;
+            transition: all 0.4s ease;
         }
 
         .cake-visual {
@@ -145,6 +151,7 @@
             font-size: 1.8rem;
             font-weight: 600;
             color: var(--cocoa);
+            transition: opacity 0.3s;
         }
         .preview-price small {
             font-family: 'Inter', sans-serif;
@@ -158,6 +165,7 @@
             display: flex;
             flex-direction: column;
             gap: 24px;
+            transition: opacity 0.3s;
         }
 
         .step-card {
@@ -166,7 +174,6 @@
             box-shadow: var(--shadow-soft);
             padding: 24px;
             border: 1px solid var(--border-soft);
-            transition: opacity 0.3s;
         }
 
         .step-header {
@@ -310,6 +317,92 @@
         }
         .modal-actions { display: flex; gap: 10px; }
 
+        /* ==================================================== */
+        /* 新增：接收者视图 (Recipient Mode) 专属样式 */
+        /* ==================================================== */
+        .wish-card {
+            display: none; /* 默认隐藏 */
+            margin-top: 20px;
+            background: #FFF9F0;
+            border: 2px dashed var(--rose-gold);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+        }
+        .wish-card::before {
+            content: '💌';
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 8px;
+            font-size: 1.2rem;
+        }
+        .wish-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: var(--cocoa);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .wish-signature {
+            margin-top: 16px;
+            font-family: 'Cookie', cursive;
+            font-size: 2rem;
+            color: var(--rose-gold);
+            text-align: right;
+        }
+
+        /* 当进入接收者模式时，彻底改变布局 */
+        body.recipient-mode .main-container {
+            grid-template-columns: 1fr;
+            max-width: 600px; /* 居中且限制最大宽度 */
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+        body.recipient-mode .builder-column {
+            display: none; /* 隐藏编辑器 */
+        }
+        body.recipient-mode .preview-column {
+            position: static;
+        }
+        body.recipient-mode .preview-card {
+            padding: 32px;
+            box-shadow: 0 12px 40px rgba(110, 68, 48, 0.12);
+        }
+        body.recipient-mode .preview-price,
+        body.recipient-mode #previewSummary {
+            display: none; /* 隐藏价格和摘要 */
+        }
+        body.recipient-mode .wish-card {
+            display: block; /* 显示贺卡 */
+        }
+        body.recipient-mode .brand-tagline {
+            display: none; /* 隐藏默认标语 */
+        }
+        body.recipient-mode .site-header::after {
+            content: 'A sweet wish for you'; /* 替换为接收者标语 */
+            display: block;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+        /* 在底部加一个“我也要做一个”的按钮 */
+        .cta-create {
+            display: none;
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 40px;
+        }
+        body.recipient-mode .cta-create {
+            display: block;
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .main-container {
@@ -350,6 +443,12 @@
                     <small> USD</small>
                 </div>
                 <p style="font-size:0.8rem; color:var(--text-light); margin-top:6px;" id="previewSummary">开始定制你的蛋糕吧</p>
+
+                <!-- 新增：接收者视角下的贺卡区域 -->
+                <div class="wish-card" id="wishCard">
+                    <div class="wish-text" id="wishText"></div>
+                    <div class="wish-signature">With love</div>
+                </div>
             </div>
         </div>
 
@@ -361,9 +460,7 @@
                     <div class="step-number">1</div>
                     <div class="step-title">选择蛋糕主体</div>
                 </div>
-                <div class="options-grid" id="baseOptions">
-                    <!-- JS 注入 -->
-                </div>
+                <div class="options-grid" id="baseOptions"></div>
             </section>
 
             <!-- Step 2: 内馅 -->
@@ -410,6 +507,11 @@
             </div>
         </div>
     </main>
+
+    <!-- 新增：接收者视角底部的 CTA -->
+    <div class="cta-create">
+        <a href="./" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Make your own CakeCraft 🎂</a>
+    </div>
 
     <!-- 分享链接弹窗 -->
     <div class="modal-overlay" id="shareModal">
@@ -477,6 +579,7 @@
         const deco3 = document.getElementById('deco3');
         const shareModal = document.getElementById('shareModal');
         const shareLinkBox = document.getElementById('shareLinkBox');
+        const wishText = document.getElementById('wishText');
 
         // ---------- 渲染选项函数 ----------
         function renderOptions(items, container, stateKey, showPrice = true) {
@@ -549,6 +652,9 @@
                     card.classList.remove('selected');
                 }
             });
+            
+            // 同步贺卡文字
+            wishText.textContent = state.message || '祝你度过美好的一天！';
         }
 
         // ---------- 事件委托：选择选项 ----------
@@ -576,6 +682,7 @@
         messageInput.addEventListener('input', (e) => {
             state.message = e.target.value;
             charCount.textContent = e.target.value.length;
+            wishText.textContent = state.message || '祝你度过美好的一天！';
         });
 
         // ---------- 重置 ----------
@@ -589,26 +696,24 @@
         });
 
         // ---------- 生成分享链接 & 发送 ----------
-        // ---------- 生成分享链接 & 发送 ----------
-document.getElementById('sendBtn').addEventListener('click', () => {
-    if (!state.base) {
-        alert('请至少选择一个蛋糕主体哦 🎂');
-        return;
-    }
-    // 构建查询参数
-    const params = new URLSearchParams();
-    params.set('base', state.base.id);
-    if (state.filling) params.set('filling', state.filling.id);
-    if (state.frosting) params.set('frosting', state.frosting.id);
-    if (state.decoration) params.set('decoration', state.decoration.id);
-    if (state.message) params.set('msg', state.message);
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            if (!state.base) {
+                alert('请至少选择一个蛋糕主体哦 🎂');
+                return;
+            }
+            const params = new URLSearchParams();
+            params.set('base', state.base.id);
+            if (state.filling) params.set('filling', state.filling.id);
+            if (state.frosting) params.set('frosting', state.frosting.id);
+            if (state.decoration) params.set('decoration', state.decoration.id);
+            if (state.message) params.set('msg', state.message);
 
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareUrl = baseUrl + '?' + params.toString();
+            const baseUrl = window.location.origin + window.location.pathname;
+            const shareUrl = baseUrl + '?' + params.toString();
 
-    shareLinkBox.textContent = shareUrl;
-    shareModal.classList.add('active');
-});
+            shareLinkBox.textContent = shareUrl;
+            shareModal.classList.add('active');
+        });
 
         // 复制链接
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
@@ -617,7 +722,6 @@ document.getElementById('sendBtn').addEventListener('click', () => {
                 document.getElementById('copyLinkBtn').textContent = '已复制 ✓';
                 setTimeout(() => { document.getElementById('copyLinkBtn').textContent = '复制链接'; }, 2000);
             }).catch(() => {
-                // 降级方案
                 const textArea = document.createElement('textarea');
                 textArea.value = link;
                 document.body.appendChild(textArea);
@@ -636,7 +740,7 @@ document.getElementById('sendBtn').addEventListener('click', () => {
             if (e.target === shareModal) shareModal.classList.remove('active');
         });
 
-        // ---------- 页面加载时解析 URL 参数（用于查看分享的蛋糕） ----------
+        // ---------- 页面加载时解析 URL 参数 ----------
         function loadFromURL() {
             const params = new URLSearchParams(window.location.search);
             if (!params.has('base')) return;
@@ -661,9 +765,9 @@ document.getElementById('sendBtn').addEventListener('click', () => {
             renderAll();
             updatePreview();
 
-            // 如果是从分享链接打开，可以滚动到预览区并给出提示
+            // 核心逻辑：如果有 base 参数，说明是接收者，进入接收者模式
             if (params.has('base')) {
-                document.querySelector('.preview-card').style.boxShadow = '0 0 0 3px var(--rose-gold)';
+                document.body.classList.add('recipient-mode');
             }
         }
 
