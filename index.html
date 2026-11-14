@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CakeCraft · 定制你的甜蜜</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rose-gold: #E8B4CB;
+            --lavender: #B19CD9;
+            --ice-blue: #A8E6CF;
+            --cream: #FFF9F0;
+            --cocoa: #6E4430;
+            --dark-cocoa: #3A241B;
+            --text-main: #4A3B32;
+            --text-light: #8A7A6E;
+            --border-soft: #F0E4DA;
+            --shadow-soft: 0 8px 24px rgba(110, 68, 48, 0.08);
+            --radius-card: 20px;
+            --radius-btn: 50px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .site-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: linear-gradient(180deg, #FFF5EE 0%, var(--cream) 100%);
+        }
+        .brand-name {
+            font-family: 'Cookie', cursive;
+            font-size: 4rem;
+            color: var(--cocoa);
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+        .brand-tagline {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Preview Column (Left, Sticky) */
+        .preview-column {
+            position: sticky;
+            top: 40px;
+        }
+
+        .preview-card {
+            background: #fff;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--border-soft);
+        }
+
+        .preview-stage {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #FDF6F0;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .cake-visual {
+            position: relative;
+            width: 70%;
+            height: 70%;
+            transition: all 0.4s ease;
+        }
+
+        .cake-base-shape {
+            position: absolute;
+            bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 60%;
+            background: #F5D0B0;
+            border-radius: 50% 50% 20% 20% / 60% 60% 20% 20%;
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
+            transition: background 0.4s, border-radius 0.4s;
+        }
+        .cake-base-shape.round { border-radius: 50% 50% 20% 20% / 60% 60% 20% 20%; }
+        .cake-base-shape.square { border-radius: 16px 16px 12px 12px; }
+        .cake-base-shape.heart {
+            border-radius: 50% 50% 20% 20% / 60% 60% 20% 20%;
+            clip-path: path('M 50,80 C 20,40 0,20 20,0 C 40,-20 60,10 50,30 C 40,10 60,-20 80,0 C 100,20 80,40 50,80 Z');
+        }
+
+        .cake-frosting-layer {
+            position: absolute;
+            bottom: 45%; left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            height: 35%;
+            background: var(--rose-gold);
+            border-radius: 50% 50% 10% 10% / 70% 70% 10% 10%;
+            transition: background 0.4s;
+            opacity: 0.9;
+        }
+
+        .cake-decoration {
+            position: absolute;
+            font-size: 2rem;
+            transition: opacity 0.3s;
+        }
+        .deco-1 { top: 15%; left: 10%; }
+        .deco-2 { top: 10%; right: 15%; }
+        .deco-3 { bottom: 25%; left: 20%; }
+
+        .preview-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--cocoa);
+        }
+        .preview-price small {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-light);
+        }
+
+        /* Builder Column (Right) */
+        .builder-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .step-card {
+            background: #fff;
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-soft);
+            padding: 24px;
+            border: 1px solid var(--border-soft);
+            transition: opacity 0.3s;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .step-number {
+            width: 32px; height: 32px;
+            background: var(--rose-gold);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .step-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--dark-cocoa);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .option-card {
+            background: #FDFAF7;
+            border: 2px solid var(--border-soft);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .option-card:hover { border-color: var(--rose-gold); transform: translateY(-2px); }
+        .option-card.selected {
+            border-color: var(--rose-gold);
+            background: #FFF5F8;
+            box-shadow: 0 4px 12px rgba(232, 180, 203, 0.3);
+        }
+        .option-card .option-icon { font-size: 1.5rem; margin-bottom: 4px; }
+        .option-card .option-name { font-size: 0.8rem; font-weight: 500; color: var(--text-main); }
+        .option-card .option-price { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+
+        .message-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 16px;
+            border: 2px solid var(--border-soft);
+            border-radius: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .message-textarea:focus { border-color: var(--rose-gold); }
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .btn {
+            padding: 16px 28px;
+            border-radius: var(--radius-btn);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: var(--rose-gold);
+            color: #fff;
+            flex: 1;
+        }
+        .btn-primary:hover { background: #D9A0B8; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(232, 180, 203, 0.4); }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            border: 2px solid var(--border-soft);
+        }
+        .btn-secondary:hover { border-color: var(--rose-gold); color: var(--cocoa); }
+
+        /* Share Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(58, 36, 27, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.15);
+        }
+        .modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--cocoa);
+            margin-bottom: 8px;
+        }
+        .modal-content p { color: var(--text-light); font-size: 0.95rem; margin-bottom: 20px; }
+        .share-link-box {
+            background: #FDFAF7;
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--cocoa);
+            word-break: break-all;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .modal-actions { display: flex; gap: 10px; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .preview-column { position: static; }
+            .brand-name { font-size: 3rem; }
+        }
+        @media (max-width: 480px) {
+            .options-grid { grid-template-columns: repeat(2, 1fr); }
+            .action-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="brand-name">CakeCraft</div>
+        <div class="brand-tagline">Build a cake · Send a wish</div>
+    </header>
+
+    <main class="main-container">
+        <!-- 左侧：预览区 -->
+        <div class="preview-column">
+            <div class="preview-card">
+                <div class="preview-stage">
+                    <div class="cake-visual" id="cakeVisual">
+                        <div class="cake-base-shape round" id="cakeBaseShape"></div>
+                        <div class="cake-frosting-layer" id="cakeFrosting"></div>
+                        <span class="cake-decoration deco-1" id="deco1"></span>
+                        <span class="cake-decoration deco-2" id="deco2"></span>
+                        <span class="cake-decoration deco-3" id="deco3"></span>
+                    </div>
+                </div>
+                <div class="preview-price">
+                    <span id="priceValue">$0</span>
+                    <small> USD</small>
+                </div>
+                <p style="font-size:0.8rem; color:var(--text-light); margin-top:6px;" id="previewSummary">开始定制你的蛋糕吧</p>
+            </div>
+        </div>
+
+        <!-- 右侧：构建器 -->
+        <div class="builder-column">
+            <!-- Step 1: 蛋糕主体 -->
+            <section class="step-card" id="step1">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div class="step-title">选择蛋糕主体</div>
+                </div>
+                <div class="options-grid" id="baseOptions">
+                    <!-- JS 注入 -->
+                </div>
+            </section>
+
+            <!-- Step 2: 内馅 -->
+            <section class="step-card" id="step2">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div class="step-title">选择内馅</div>
+                </div>
+                <div class="options-grid" id="fillingOptions"></div>
+            </section>
+
+            <!-- Step 3: 糖霜颜色 -->
+            <section class="step-card" id="step3">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div class="step-title">选择糖霜颜色</div>
+                </div>
+                <div class="options-grid" id="frostingOptions"></div>
+            </section>
+
+            <!-- Step 4: 装饰 -->
+            <section class="step-card" id="step4">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div class="step-title">添加装饰</div>
+                </div>
+                <div class="options-grid" id="decorationOptions"></div>
+            </section>
+
+            <!-- Step 5: 祝福语 -->
+            <section class="step-card" id="step5">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div class="step-title">写下祝福</div>
+                </div>
+                <textarea class="message-textarea" id="messageInput" maxlength="300" placeholder="写下你想对 TA 说的话..."></textarea>
+                <div class="char-counter"><span id="charCount">0</span> / 300</div>
+            </section>
+
+            <!-- 操作按钮 -->
+            <div class="action-bar">
+                <button class="btn btn-secondary" id="resetBtn">重新选择</button>
+                <button class="btn btn-primary" id="sendBtn">Send My CakeCraft</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 分享链接弹窗 -->
+    <div class="modal-overlay" id="shareModal">
+        <div class="modal-content">
+            <h3>🎂 你的 CakeCraft 已就绪</h3>
+            <p>复制以下链接，发送给 TA 就能看到你定制的虚拟蛋糕啦。</p>
+            <div class="share-link-box" id="shareLinkBox"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" style="flex:1;" id="closeModalBtn">关闭</button>
+                <button class="btn btn-primary" style="flex:1;" id="copyLinkBtn">复制链接</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ---------- 数据配置 ----------
+        const config = {
+            bases: [
+                { id: 'round-vanilla', name: '圆形香草', type: 'round', color: '#F5D0B0', price: 28, icon: '⭕' },
+                { id: 'square-chocolate', name: '方形巧克力', type: 'square', color: '#8B5A3C', price: 32, icon: '⬜' },
+                { id: 'heart-strawberry', name: '心形草莓', type: 'heart', color: '#F7C5CC', price: 35, icon: '❤️' }
+            ],
+            fillings: [
+                { id: 'strawberry', name: '草莓果酱', price: 4, icon: '🍓' },
+                { id: 'chocolate', name: '巧克力甘纳许', price: 5, icon: '🍫' },
+                { id: 'vanilla-cream', name: '香草奶油', price: 4, icon: '🍦' },
+                { id: 'lemon-curd', name: '柠檬凝乳', price: 5, icon: '🍋' }
+            ],
+            frostings: [
+                { id: 'rose-gold', name: '玫瑰金', color: '#E8B4CB', price: 6 },
+                { id: 'lavender', name: '薰衣草', color: '#B19CD9', price: 6 },
+                { id: 'ice-blue', name: '冰蓝色', color: '#A8E6CF', price: 6 },
+                { id: 'classic-white', name: '经典白', color: '#FFF9F0', price: 5 }
+            ],
+            decorations: [
+                { id: 'berries', name: '混合莓果', price: 8, icon: '🫐', deco: '🫐' },
+                { id: 'chocolate-flakes', name: '巧克力碎', price: 7, icon: '🍫', deco: '🍫' },
+                { id: 'edible-flowers', name: '食用花', price: 9, icon: '🌸', deco: '🌸' },
+                { id: 'gold-leaf', name: '金箔', price: 12, icon: '✨', deco: '✨' }
+            ]
+        };
+
+        // 状态管理
+        let state = {
+            base: null,
+            filling: null,
+            frosting: null,
+            decoration: null,
+            message: ''
+        };
+
+        // ---------- DOM 元素 ----------
+        const baseOptionsEl = document.getElementById('baseOptions');
+        const fillingOptionsEl = document.getElementById('fillingOptions');
+        const frostingOptionsEl = document.getElementById('frostingOptions');
+        const decorationOptionsEl = document.getElementById('decorationOptions');
+        const messageInput = document.getElementById('messageInput');
+        const charCount = document.getElementById('charCount');
+        const priceValue = document.getElementById('priceValue');
+        const previewSummary = document.getElementById('previewSummary');
+        const cakeBaseShape = document.getElementById('cakeBaseShape');
+        const cakeFrosting = document.getElementById('cakeFrosting');
+        const deco1 = document.getElementById('deco1');
+        const deco2 = document.getElementById('deco2');
+        const deco3 = document.getElementById('deco3');
+        const shareModal = document.getElementById('shareModal');
+        const shareLinkBox = document.getElementById('shareLinkBox');
+
+        // ---------- 渲染选项函数 ----------
+        function renderOptions(items, container, stateKey, showPrice = true) {
+            container.innerHTML = items.map(item => `
+                <div class="option-card ${state[stateKey]?.id === item.id ? 'selected' : ''}"
+                     data-id="${item.id}" data-key="${stateKey}">
+                    ${item.icon ? `<div class="option-icon">${item.icon}</div>` : ''}
+                    ${item.color && !item.icon ? `<div style="width:32px;height:32px;border-radius:50%;background:${item.color};margin:0 auto 6px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>` : ''}
+                    <div class="option-name">${item.name}</div>
+                    ${showPrice ? `<div class="option-price">+$${item.price}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ---------- 初始化渲染 ----------
+        function renderAll() {
+            renderOptions(config.bases, baseOptionsEl, 'base');
+            renderOptions(config.fillings, fillingOptionsEl, 'filling');
+            renderOptions(config.frostings, frostingOptionsEl, 'frosting');
+            renderOptions(config.decorations, decorationOptionsEl, 'decoration');
+        }
+
+        // ---------- 更新预览 ----------
+        function updatePreview() {
+            // 蛋糕基底
+            if (state.base) {
+                cakeBaseShape.className = 'cake-base-shape ' + state.base.type;
+                cakeBaseShape.style.background = state.base.color;
+            } else {
+                cakeBaseShape.className = 'cake-base-shape round';
+                cakeBaseShape.style.background = '#F5D0B0';
+            }
+
+            // 糖霜颜色
+            if (state.frosting) {
+                cakeFrosting.style.background = state.frosting.color;
+            } else {
+                cakeFrosting.style.background = 'var(--rose-gold)';
+            }
+
+            // 装饰
+            const decoEmojis = state.decoration ? state.decoration.deco : '';
+            deco1.textContent = decoEmojis;
+            deco2.textContent = decoEmojis;
+            deco3.textContent = decoEmojis;
+
+            // 价格计算
+            let total = 0;
+            if (state.base) total += state.base.price;
+            if (state.filling) total += state.filling.price;
+            if (state.frosting) total += state.frosting.price;
+            if (state.decoration) total += state.decoration.price;
+            priceValue.textContent = '$' + total;
+
+            // 摘要文字
+            const parts = [];
+            if (state.base) parts.push(state.base.name);
+            if (state.filling) parts.push(state.filling.name);
+            if (state.frosting) parts.push(state.frosting.name + '糖霜');
+            if (state.decoration) parts.push(state.decoration.name);
+            previewSummary.textContent = parts.length ? parts.join(' · ') : '开始定制你的蛋糕吧';
+
+            // 更新所有选项的选中状态
+            document.querySelectorAll('.option-card').forEach(card => {
+                const key = card.dataset.key;
+                const id = card.dataset.id;
+                if (state[key] && state[key].id === id) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+        }
+
+        // ---------- 事件委托：选择选项 ----------
+        document.querySelector('.builder-column').addEventListener('click', (e) => {
+            const card = e.target.closest('.option-card');
+            if (!card) return;
+
+            const key = card.dataset.key;
+            const id = card.dataset.id;
+
+            let list;
+            if (key === 'base') list = config.bases;
+            else if (key === 'filling') list = config.fillings;
+            else if (key === 'frosting') list = config.frostings;
+            else if (key === 'decoration') list = config.decorations;
+
+            const selectedItem = list.find(item => item.id === id);
+            if (selectedItem) {
+                state[key] = selectedItem;
+                updatePreview();
+            }
+        });
+
+        // ---------- 祝福语输入 ----------
+        messageInput.addEventListener('input', (e) => {
+            state.message = e.target.value;
+            charCount.textContent = e.target.value.length;
+        });
+
+        // ---------- 重置 ----------
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            state = { base: null, filling: null, frosting: null, decoration: null, message: '' };
+            messageInput.value = '';
+            charCount.textContent = '0';
+            renderAll();
+            updatePreview();
+            shareModal.classList.remove('active');
+        });
+
+        // ---------- 生成分享链接 & 发送 ----------
+        // ---------- 生成分享链接 & 发送 ----------
+document.getElementById('sendBtn').addEventListener('click', () => {
+    if (!state.base) {
+        alert('请至少选择一个蛋糕主体哦 🎂');
+        return;
+    }
+    // 构建查询参数
+    const params = new URLSearchParams();
+    params.set('base', state.base.id);
+    if (state.filling) params.set('filling', state.filling.id);
+    if (state.frosting) params.set('frosting', state.frosting.id);
+    if (state.decoration) params.set('decoration', state.decoration.id);
+    if (state.message) params.set('msg', state.message);
+
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = baseUrl + '?' + params.toString();
+
+    shareLinkBox.textContent = shareUrl;
+    shareModal.classList.add('active');
+});
+
+        // 复制链接
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const link = shareLinkBox.textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                document.getElementById('copyLinkBtn').textContent = '已复制 ✓';
+                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = '复制链接'; }, 2000);
+            }).catch(() => {
+                // 降级方案
+                const textArea = document.createElement('textarea');
+                textArea.value = link;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                document.getElementById('copyLinkBtn').textContent = '已复制 ✓';
+                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = '复制链接'; }, 2000);
+            });
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            shareModal.classList.remove('active');
+        });
+        shareModal.addEventListener('click', (e) => {
+            if (e.target === shareModal) shareModal.classList.remove('active');
+        });
+
+        // ---------- 页面加载时解析 URL 参数（用于查看分享的蛋糕） ----------
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            if (!params.has('base')) return;
+
+            const baseId = params.get('base');
+            const fillingId = params.get('filling');
+            const frostingId = params.get('frosting');
+            const decorationId = params.get('decoration');
+            const msg = params.get('msg');
+
+            state.base = config.bases.find(b => b.id === baseId) || null;
+            state.filling = config.fillings.find(f => f.id === fillingId) || null;
+            state.frosting = config.frostings.find(f => f.id === frostingId) || null;
+            state.decoration = config.decorations.find(d => d.id === decorationId) || null;
+            state.message = msg ? decodeURIComponent(msg) : '';
+
+            if (state.message) {
+                messageInput.value = state.message;
+                charCount.textContent = state.message.length;
+            }
+
+            renderAll();
+            updatePreview();
+
+            // 如果是从分享链接打开，可以滚动到预览区并给出提示
+            if (params.has('base')) {
+                document.querySelector('.preview-card').style.boxShadow = '0 0 0 3px var(--rose-gold)';
+            }
+        }
+
+        // ---------- 启动 ----------
+        renderAll();
+        updatePreview();
+        loadFromURL();
+    </script>
+</body>
+</html>
