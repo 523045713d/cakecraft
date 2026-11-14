@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CakeCraft · 定制你的甜蜜</title>
+    <title>CakeCraft · Craft your sweet wishes</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
@@ -146,18 +146,25 @@
         .deco-2 { top: 10%; right: 15%; }
         .deco-3 { bottom: 25%; left: 20%; }
 
-        .preview-price {
+        /* Love Meter */
+        .love-meter {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             font-weight: 600;
-            color: var(--cocoa);
+            color: #E5989B; /* 更温暖的爱心红 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: opacity 0.3s;
         }
-        .preview-price small {
+        .love-meter small {
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
-            font-weight: 400;
+            font-weight: 500;
             color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         /* Builder Column (Right) */
@@ -225,7 +232,7 @@
         }
         .option-card .option-icon { font-size: 1.5rem; margin-bottom: 4px; }
         .option-card .option-name { font-size: 0.8rem; font-weight: 500; color: var(--text-main); }
-        .option-card .option-price { font-size: 0.75rem; color: var(--text-light); margin-top: 2px; }
+        .option-card .option-price { font-size: 0.75rem; color: #E5989B; margin-top: 2px; font-weight: 600; }
 
         .message-textarea {
             width: 100%;
@@ -318,10 +325,10 @@
         .modal-actions { display: flex; gap: 10px; }
 
         /* ==================================================== */
-        /* 新增：接收者视图 (Recipient Mode) 专属样式 */
+        /* Recipient View (Wish Card) Styles */
         /* ==================================================== */
         .wish-card {
-            display: none; /* 默认隐藏 */
+            display: none;
             margin-top: 20px;
             background: #FFF9F0;
             border: 2px dashed var(--rose-gold);
@@ -355,15 +362,14 @@
             text-align: right;
         }
 
-        /* 当进入接收者模式时，彻底改变布局 */
         body.recipient-mode .main-container {
             grid-template-columns: 1fr;
-            max-width: 600px; /* 居中且限制最大宽度 */
+            max-width: 600px;
             margin: 0 auto;
             padding-top: 40px;
         }
         body.recipient-mode .builder-column {
-            display: none; /* 隐藏编辑器 */
+            display: none;
         }
         body.recipient-mode .preview-column {
             position: static;
@@ -372,18 +378,18 @@
             padding: 32px;
             box-shadow: 0 12px 40px rgba(110, 68, 48, 0.12);
         }
-        body.recipient-mode .preview-price,
+        body.recipient-mode .love-meter,
         body.recipient-mode #previewSummary {
-            display: none; /* 隐藏价格和摘要 */
+            display: none; 
         }
         body.recipient-mode .wish-card {
-            display: block; /* 显示贺卡 */
+            display: block;
         }
         body.recipient-mode .brand-tagline {
-            display: none; /* 隐藏默认标语 */
+            display: none;
         }
         body.recipient-mode .site-header::after {
-            content: 'A sweet wish for you'; /* 替换为接收者标语 */
+            content: 'A sweet wish for you';
             display: block;
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
@@ -392,7 +398,6 @@
             text-transform: uppercase;
             margin-top: 8px;
         }
-        /* 在底部加一个“我也要做一个”的按钮 */
         .cta-create {
             display: none;
             text-align: center;
@@ -426,7 +431,7 @@
     </header>
 
     <main class="main-container">
-        <!-- 左侧：预览区 -->
+        <!-- Left: Preview -->
         <div class="preview-column">
             <div class="preview-card">
                 <div class="preview-stage">
@@ -438,13 +443,15 @@
                         <span class="cake-decoration deco-3" id="deco3"></span>
                     </div>
                 </div>
-                <div class="preview-price">
-                    <span id="priceValue">$0</span>
-                    <small> USD</small>
+                
+                <!-- Changed Price to Love Meter -->
+                <div class="love-meter">
+                    <span id="loveValue">0</span>
+                    <small>❤️ Love</small>
                 </div>
-                <p style="font-size:0.8rem; color:var(--text-light); margin-top:6px;" id="previewSummary">开始定制你的蛋糕吧</p>
+                <p style="font-size:0.8rem; color:var(--text-light); margin-top:6px;" id="previewSummary">Start crafting your cake!</p>
 
-                <!-- 新增：接收者视角下的贺卡区域 -->
+                <!-- Recipient Wish Card -->
                 <div class="wish-card" id="wishCard">
                     <div class="wish-text" id="wishText"></div>
                     <div class="wish-signature">With love</div>
@@ -452,109 +459,108 @@
             </div>
         </div>
 
-        <!-- 右侧：构建器 -->
+        <!-- Right: Builder -->
         <div class="builder-column">
-            <!-- Step 1: 蛋糕主体 -->
+            <!-- Step 1 -->
             <section class="step-card" id="step1">
                 <div class="step-header">
                     <div class="step-number">1</div>
-                    <div class="step-title">选择蛋糕主体</div>
+                    <div class="step-title">Choose Cake Base</div>
                 </div>
                 <div class="options-grid" id="baseOptions"></div>
             </section>
 
-            <!-- Step 2: 内馅 -->
+            <!-- Step 2 -->
             <section class="step-card" id="step2">
                 <div class="step-header">
                     <div class="step-number">2</div>
-                    <div class="step-title">选择内馅</div>
+                    <div class="step-title">Choose Filling</div>
                 </div>
                 <div class="options-grid" id="fillingOptions"></div>
             </section>
 
-            <!-- Step 3: 糖霜颜色 -->
+            <!-- Step 3 -->
             <section class="step-card" id="step3">
                 <div class="step-header">
                     <div class="step-number">3</div>
-                    <div class="step-title">选择糖霜颜色</div>
+                    <div class="step-title">Choose Frosting</div>
                 </div>
                 <div class="options-grid" id="frostingOptions"></div>
             </section>
 
-            <!-- Step 4: 装饰 -->
+            <!-- Step 4 -->
             <section class="step-card" id="step4">
                 <div class="step-header">
                     <div class="step-number">4</div>
-                    <div class="step-title">添加装饰</div>
+                    <div class="step-title">Add Decorations</div>
                 </div>
                 <div class="options-grid" id="decorationOptions"></div>
             </section>
 
-            <!-- Step 5: 祝福语 -->
+            <!-- Step 5 -->
             <section class="step-card" id="step5">
                 <div class="step-header">
                     <div class="step-number">5</div>
-                    <div class="step-title">写下祝福</div>
+                    <div class="step-title">Write a Message</div>
                 </div>
-                <textarea class="message-textarea" id="messageInput" maxlength="300" placeholder="写下你想对 TA 说的话..."></textarea>
+                <textarea class="message-textarea" id="messageInput" maxlength="300" placeholder="Write a sweet message for them..."></textarea>
                 <div class="char-counter"><span id="charCount">0</span> / 300</div>
             </section>
 
-            <!-- 操作按钮 -->
+            <!-- Actions -->
             <div class="action-bar">
-                <button class="btn btn-secondary" id="resetBtn">重新选择</button>
+                <button class="btn btn-secondary" id="resetBtn">Reset</button>
                 <button class="btn btn-primary" id="sendBtn">Send My CakeCraft</button>
             </div>
         </div>
     </main>
 
-    <!-- 新增：接收者视角底部的 CTA -->
+    <!-- CTA for Recipient -->
     <div class="cta-create">
         <a href="./" class="btn btn-secondary" style="text-decoration: none; display: inline-block;">Make your own CakeCraft 🎂</a>
     </div>
 
-    <!-- 分享链接弹窗 -->
+    <!-- Share Modal -->
     <div class="modal-overlay" id="shareModal">
         <div class="modal-content">
-            <h3>🎂 你的 CakeCraft 已就绪</h3>
-            <p>复制以下链接，发送给 TA 就能看到你定制的虚拟蛋糕啦。</p>
+            <h3>🎂 Your CakeCraft is Ready</h3>
+            <p>Copy the link below and send it to share the sweetness.</p>
             <div class="share-link-box" id="shareLinkBox"></div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" style="flex:1;" id="closeModalBtn">关闭</button>
-                <button class="btn btn-primary" style="flex:1;" id="copyLinkBtn">复制链接</button>
+                <button class="btn btn-secondary" style="flex:1;" id="closeModalBtn">Close</button>
+                <button class="btn btn-primary" style="flex:1;" id="copyLinkBtn">Copy Link</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ---------- 数据配置 ----------
+        // Data Configuration (Translated & Love Points)
         const config = {
             bases: [
-                { id: 'round-vanilla', name: '圆形香草', type: 'round', color: '#F5D0B0', price: 28, icon: '⭕' },
-                { id: 'square-chocolate', name: '方形巧克力', type: 'square', color: '#8B5A3C', price: 32, icon: '⬜' },
-                { id: 'heart-strawberry', name: '心形草莓', type: 'heart', color: '#F7C5CC', price: 35, icon: '❤️' }
+                { id: 'round-vanilla', name: 'Round Vanilla', type: 'round', color: '#F5D0B0', price: 28, icon: '⭕' },
+                { id: 'square-chocolate', name: 'Square Chocolate', type: 'square', color: '#8B5A3C', price: 32, icon: '⬜' },
+                { id: 'heart-strawberry', name: 'Heart Strawberry', type: 'heart', color: '#F7C5CC', price: 35, icon: '❤️' }
             ],
             fillings: [
-                { id: 'strawberry', name: '草莓果酱', price: 4, icon: '🍓' },
-                { id: 'chocolate', name: '巧克力甘纳许', price: 5, icon: '🍫' },
-                { id: 'vanilla-cream', name: '香草奶油', price: 4, icon: '🍦' },
-                { id: 'lemon-curd', name: '柠檬凝乳', price: 5, icon: '🍋' }
+                { id: 'strawberry', name: 'Strawberry Jam', price: 4, icon: '🍓' },
+                { id: 'chocolate', name: 'Chocolate Ganache', price: 5, icon: '🍫' },
+                { id: 'vanilla-cream', name: 'Vanilla Cream', price: 4, icon: '🍦' },
+                { id: 'lemon-curd', name: 'Lemon Curd', price: 5, icon: '🍋' }
             ],
             frostings: [
-                { id: 'rose-gold', name: '玫瑰金', color: '#E8B4CB', price: 6 },
-                { id: 'lavender', name: '薰衣草', color: '#B19CD9', price: 6 },
-                { id: 'ice-blue', name: '冰蓝色', color: '#A8E6CF', price: 6 },
-                { id: 'classic-white', name: '经典白', color: '#FFF9F0', price: 5 }
+                { id: 'rose-gold', name: 'Rose Gold', color: '#E8B4CB', price: 6 },
+                { id: 'lavender', name: 'Lavender', color: '#B19CD9', price: 6 },
+                { id: 'ice-blue', name: 'Ice Blue', color: '#A8E6CF', price: 6 },
+                { id: 'classic-white', name: 'Classic White', color: '#FFF9F0', price: 5 }
             ],
             decorations: [
-                { id: 'berries', name: '混合莓果', price: 8, icon: '🫐', deco: '🫐' },
-                { id: 'chocolate-flakes', name: '巧克力碎', price: 7, icon: '🍫', deco: '🍫' },
-                { id: 'edible-flowers', name: '食用花', price: 9, icon: '🌸', deco: '🌸' },
-                { id: 'gold-leaf', name: '金箔', price: 12, icon: '✨', deco: '✨' }
+                { id: 'berries', name: 'Mixed Berries', price: 8, icon: '🫐', deco: '🫐' },
+                { id: 'chocolate-flakes', name: 'Chocolate Flakes', price: 7, icon: '🍫', deco: '🍫' },
+                { id: 'edible-flowers', name: 'Edible Flowers', price: 9, icon: '🌸', deco: '🌸' },
+                { id: 'gold-leaf', name: 'Gold Leaf', price: 12, icon: '✨', deco: '✨' }
             ]
         };
 
-        // 状态管理
         let state = {
             base: null,
             filling: null,
@@ -563,14 +569,14 @@
             message: ''
         };
 
-        // ---------- DOM 元素 ----------
+        // DOM Elements
         const baseOptionsEl = document.getElementById('baseOptions');
         const fillingOptionsEl = document.getElementById('fillingOptions');
         const frostingOptionsEl = document.getElementById('frostingOptions');
         const decorationOptionsEl = document.getElementById('decorationOptions');
         const messageInput = document.getElementById('messageInput');
         const charCount = document.getElementById('charCount');
-        const priceValue = document.getElementById('priceValue');
+        const loveValue = document.getElementById('loveValue');
         const previewSummary = document.getElementById('previewSummary');
         const cakeBaseShape = document.getElementById('cakeBaseShape');
         const cakeFrosting = document.getElementById('cakeFrosting');
@@ -581,7 +587,7 @@
         const shareLinkBox = document.getElementById('shareLinkBox');
         const wishText = document.getElementById('wishText');
 
-        // ---------- 渲染选项函数 ----------
+        // Render Options
         function renderOptions(items, container, stateKey, showPrice = true) {
             container.innerHTML = items.map(item => `
                 <div class="option-card ${state[stateKey]?.id === item.id ? 'selected' : ''}"
@@ -589,12 +595,11 @@
                     ${item.icon ? `<div class="option-icon">${item.icon}</div>` : ''}
                     ${item.color && !item.icon ? `<div style="width:32px;height:32px;border-radius:50%;background:${item.color};margin:0 auto 6px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);"></div>` : ''}
                     <div class="option-name">${item.name}</div>
-                    ${showPrice ? `<div class="option-price">+$${item.price}</div>` : ''}
+                    ${showPrice ? `<div class="option-price">+${item.price} ❤️</div>` : ''}
                 </div>
             `).join('');
         }
 
-        // ---------- 初始化渲染 ----------
         function renderAll() {
             renderOptions(config.bases, baseOptionsEl, 'base');
             renderOptions(config.fillings, fillingOptionsEl, 'filling');
@@ -602,9 +607,8 @@
             renderOptions(config.decorations, decorationOptionsEl, 'decoration');
         }
 
-        // ---------- 更新预览 ----------
         function updatePreview() {
-            // 蛋糕基底
+            // Cake Base
             if (state.base) {
                 cakeBaseShape.className = 'cake-base-shape ' + state.base.type;
                 cakeBaseShape.style.background = state.base.color;
@@ -613,36 +617,36 @@
                 cakeBaseShape.style.background = '#F5D0B0';
             }
 
-            // 糖霜颜色
+            // Frosting
             if (state.frosting) {
                 cakeFrosting.style.background = state.frosting.color;
             } else {
                 cakeFrosting.style.background = 'var(--rose-gold)';
             }
 
-            // 装饰
+            // Decorations
             const decoEmojis = state.decoration ? state.decoration.deco : '';
             deco1.textContent = decoEmojis;
             deco2.textContent = decoEmojis;
             deco3.textContent = decoEmojis;
 
-            // 价格计算
-            let total = 0;
-            if (state.base) total += state.base.price;
-            if (state.filling) total += state.filling.price;
-            if (state.frosting) total += state.frosting.price;
-            if (state.decoration) total += state.decoration.price;
-            priceValue.textContent = '$' + total;
+            // Love Calculation
+            let totalLove = 0;
+            if (state.base) totalLove += state.base.price;
+            if (state.filling) totalLove += state.filling.price;
+            if (state.frosting) totalLove += state.frosting.price;
+            if (state.decoration) totalLove += state.decoration.price;
+            loveValue.textContent = totalLove;
 
-            // 摘要文字
+            // Summary
             const parts = [];
             if (state.base) parts.push(state.base.name);
             if (state.filling) parts.push(state.filling.name);
-            if (state.frosting) parts.push(state.frosting.name + '糖霜');
+            if (state.frosting) parts.push(state.frosting.name + ' Frosting');
             if (state.decoration) parts.push(state.decoration.name);
-            previewSummary.textContent = parts.length ? parts.join(' · ') : '开始定制你的蛋糕吧';
+            previewSummary.textContent = parts.length ? parts.join(' · ') : 'Start crafting your cake!';
 
-            // 更新所有选项的选中状态
+            // Selected states
             document.querySelectorAll('.option-card').forEach(card => {
                 const key = card.dataset.key;
                 const id = card.dataset.id;
@@ -653,11 +657,11 @@
                 }
             });
             
-            // 同步贺卡文字
-            wishText.textContent = state.message || '祝你度过美好的一天！';
+            // Sync wish card text
+            wishText.textContent = state.message || 'Wishing you a wonderful day!';
         }
 
-        // ---------- 事件委托：选择选项 ----------
+        // Event Listener: Select Option
         document.querySelector('.builder-column').addEventListener('click', (e) => {
             const card = e.target.closest('.option-card');
             if (!card) return;
@@ -678,14 +682,14 @@
             }
         });
 
-        // ---------- 祝福语输入 ----------
+        // Message Input
         messageInput.addEventListener('input', (e) => {
             state.message = e.target.value;
             charCount.textContent = e.target.value.length;
-            wishText.textContent = state.message || '祝你度过美好的一天！';
+            wishText.textContent = state.message || 'Wishing you a wonderful day!';
         });
 
-        // ---------- 重置 ----------
+        // Reset
         document.getElementById('resetBtn').addEventListener('click', () => {
             state = { base: null, filling: null, frosting: null, decoration: null, message: '' };
             messageInput.value = '';
@@ -695,10 +699,10 @@
             shareModal.classList.remove('active');
         });
 
-        // ---------- 生成分享链接 & 发送 ----------
+        // Generate Link
         document.getElementById('sendBtn').addEventListener('click', () => {
             if (!state.base) {
-                alert('请至少选择一个蛋糕主体哦 🎂');
+                alert('Please select a cake base first! 🎂');
                 return;
             }
             const params = new URLSearchParams();
@@ -715,12 +719,12 @@
             shareModal.classList.add('active');
         });
 
-        // 复制链接
+        // Copy Link
         document.getElementById('copyLinkBtn').addEventListener('click', () => {
             const link = shareLinkBox.textContent;
             navigator.clipboard.writeText(link).then(() => {
-                document.getElementById('copyLinkBtn').textContent = '已复制 ✓';
-                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = '复制链接'; }, 2000);
+                document.getElementById('copyLinkBtn').textContent = 'Copied ✓';
+                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = 'Copy Link'; }, 2000);
             }).catch(() => {
                 const textArea = document.createElement('textarea');
                 textArea.value = link;
@@ -728,8 +732,8 @@
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                document.getElementById('copyLinkBtn').textContent = '已复制 ✓';
-                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = '复制链接'; }, 2000);
+                document.getElementById('copyLinkBtn').textContent = 'Copied ✓';
+                setTimeout(() => { document.getElementById('copyLinkBtn').textContent = 'Copy Link'; }, 2000);
             });
         });
 
@@ -740,7 +744,7 @@
             if (e.target === shareModal) shareModal.classList.remove('active');
         });
 
-        // ---------- 页面加载时解析 URL 参数 ----------
+        // Load from URL
         function loadFromURL() {
             const params = new URLSearchParams(window.location.search);
             if (!params.has('base')) return;
@@ -765,13 +769,13 @@
             renderAll();
             updatePreview();
 
-            // 核心逻辑：如果有 base 参数，说明是接收者，进入接收者模式
+            // Recipient Mode
             if (params.has('base')) {
                 document.body.classList.add('recipient-mode');
             }
         }
 
-        // ---------- 启动 ----------
+        // Start
         renderAll();
         updatePreview();
         loadFromURL();
